@@ -33,6 +33,7 @@ import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
@@ -172,9 +173,15 @@ public class PartialBeanBindingExtension implements Extension, Deactivatable
         }
 
         AnnotatedType<T> annotatedType = beanManager.createAnnotatedType(beanClass);
+        BeanAttributes<T> beanAttributes = beanManager.createBeanAttributes(annotatedType);
 
-        BeanConfigurator<T> beanConfigurator = afterBeanDiscovery.addBean()    
-            .read(annotatedType)
+        BeanConfigurator<T> beanConfigurator = (BeanConfigurator<T>) afterBeanDiscovery.addBean()
+            .name(beanAttributes.getName())
+            .qualifiers(beanAttributes.getQualifiers())
+            .scope(beanAttributes.getScope())
+            .stereotypes(beanAttributes.getStereotypes())
+            .types(beanAttributes.getTypes())
+            .alternative(beanAttributes.isAlternative())
             .beanClass(beanClass);
         //  .passivationCapable(true)
 
