@@ -39,6 +39,16 @@ public interface CoreBaseConfig extends DeltaSpikeBaseConfig
                         .getValue();
     }
 
+    interface InterceptorCustomization
+    {
+        Integer PRIORITY =
+                ConfigResolver.resolve("deltaspike.interceptor.priority")
+                        .as(Integer.class)
+                        .withCurrentProjectStage(true)
+                        .withDefault(999) //PLATFORM_BEFORE is 0, LIBRARY_BEFORE is 1000 and APPLICATION is 2000
+                        .getValue();
+    }
+
     interface MBeanIntegration
     {
         Boolean AUTO_UNREGISTER =
